@@ -35,7 +35,7 @@ renderer.setClearColor(0x000000, 1);
 // Add HDRI environment map for realistic lighting
 const loader = new RGBELoader();
 loader.load(
-  "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/clarens_night_02_1k.hdr",
+ "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/clarens_night_02_1k.hdr",
   (texture) => {
     texture.mapping = THREE.EquirectangularReflectionMapping;
     scene.environment = texture;
@@ -82,7 +82,7 @@ scene.add(starsSphere);
 for (let i = 0; i < 4; i++) {
   // Add texture to the sphere
   const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load(texture[i]);
+  const texture = textureLoader.load(textures[i]);
   texture.colorSpace = THREE.SRGBColorSpace;
 
   const geometry = new THREE.SphereGeometry(radius, segments, segments);
