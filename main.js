@@ -3,7 +3,7 @@ import "./style.css";
 // Import Three.js and OrbitControls
 import * as THREE from "three";
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { color, log } from "three/tsl";
+
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
 import gsap from "gsap";
@@ -48,10 +48,10 @@ const segments = 70;
 const orbitRadius = 6;
 const colors = ["red", "green", "blue", "yellow"];
 const textures = [
-  "./public/csilla/color.png",
-  "./public/earth/map.jpg",
-  "./public/venus/map.jpg",
-  "./public/volcanic/color.png",
+  "/csilla/color.png",
+  "/earth/map.jpg",
+  "/venus/map.jpg",
+  "/volcanic/color.png",
 ];
 const spheres = new THREE.Group([]);
 // Create a big sphere with stars texture for the background
@@ -65,7 +65,7 @@ const starGeometry = new THREE.SphereGeometry(
 
 // Load stars texture
 const starsTextureLoader = new THREE.TextureLoader();
-const starsTexture = starsTextureLoader.load("./public/stars.jpg");
+const starsTexture = starsTextureLoader.load("/stars.jpg");
 starsTexture.colorSpace = THREE.SRGBColorSpace;
 // Create material with the texture on the inside of the sphere
 const starsMaterial = new THREE.MeshStandardMaterial({
@@ -82,15 +82,15 @@ scene.add(starsSphere);
 for (let i = 0; i < 4; i++) {
   // Add texture to the sphere
   const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load(textures[i]);
+  const texture = textureLoader.load(texture[i]);
   texture.colorSpace = THREE.SRGBColorSpace;
 
   const geometry = new THREE.SphereGeometry(radius, segments, segments);
-  const material = new THREE.MeshStandardMaterial({ map: textures[i] });
+  const material = new THREE.MeshStandardMaterial({ map: texture });
   const sphere = new THREE.Mesh(geometry, material);
 
-  material.map = texture;
-  material.needsUpdate = true;
+  // material.map = texture;
+  // material.needsUpdate = true;
 
   const angle = (i / 4) * (Math.PI * 2);
   sphere.position.x = orbitRadius * Math.cos(angle);
