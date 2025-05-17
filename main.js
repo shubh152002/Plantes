@@ -129,48 +129,65 @@ let scrollCount = 0;
 
 function handleWheel(event) {
   const currentTime = Date.now();
-  if (currentTime - lastWheelTime >= throttleDelay) {
+  if (currentTime - lastWheelTime >= throttleDelay && event.deltaY > 0) { // Only forward
     lastWheelTime = currentTime;
-    const direction = event.deltaY > 0 ? "down" : "up";
-    scrollCount = (scrollCount +1) % 4;
-    
-    const heading = document.querySelectorAll(".heading")
-    gsap.to(heading,{
-      duration:2,
-      y:`-=${100}%`,
-      ease:"power2.inOut",
+    currentPlanet = (currentPlanet + 1) % 4;
 
-     
+    gsap.to(spheres.rotation, {
+      duration: 2,
+      y: -currentPlanet * (Math.PI / 2),
+      ease: "power3.inOut",
+      onUpdate: updateHeading
     });
-    gsap.to(spheres.rotation,{
-      duration:2,
-      y:`-=${Math.PI / 2}%`,
-      ease:"power2.inOut"
-    })
-
-    if(scrollCount === 0){
-      gsap.to(heading,{
-        duration:2,
-        y:`0`,
-        ease:"Power2.inOut"
-      });
-    }
   }
 }
 window.addEventListener("wheel", handleWheel);
 
-// Animation loop
+let lastPlanet = 0;
+let autoRotate = false;
+
 function animate() {
   requestAnimationFrame(animate);
 
-  // Update controls
-  // controls.update();
+  if (autoRotate) {
+    spheres.rotation.y += 0.01;
+    // Calculate which planet is in front
+    let planetIndex = Math.round(-(spheres.rotation.y / (Math.PI / 2))) % 4;
+    if (planetIndex < 0) planetIndex += 4;
+    if (planetIndex !== lastPlanet) {
+      currentPlanet = planetIndex;
+      updateHeading();
+      lastPlanet = planetIndex;
+    }
+  }
 
-  // Rotate the cube
-
-  // Render the scene
   renderer.render(scene, camera);
 }
 
 // Start the animation loop
+let currentPlanet = 0;
+const planetNames = ["Earth", "Csilla", "Volcanic", "Venus"];
+
+function updateHeading() {
+  const heading = document.querySelector(".heading");
+  heading.textContent = planetNames[currentPlanet];
+}
+updateHeading();
+spheres.rotation.y = 0;
 animate();
+
+function isSmallDevice() {
+  return window.innerWidth < 640;
+}
+
+function updateForDevice() {
+  if (isSmallDevice()) {
+    camera.position.z = 16; // farther for small devices
+    autoRotate = true;
+  } else {
+    camera.position.z = 11; // default
+    autoRotate = false;
+  }
+}
+updateForDevice();
+window.addEventListener("resize", updateForDevice);
